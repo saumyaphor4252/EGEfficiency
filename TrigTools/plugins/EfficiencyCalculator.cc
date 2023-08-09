@@ -286,38 +286,35 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
     auto nmatch_filter = matched_objs_filter.size();
     
 
-    if (nmatch_filter > 0 && el.pt() > 32.)  occupancy_phi_eta_all->Fill(el.eta(),el.phi());
+    //Fill denominators
+      if (fabs(el.eta()) < 1.0 ) den_ele_pt_EB1->Fill(el.pt());
+      if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44 ) den_ele_pt_EB2->Fill(el.pt());
 
-    // //Fill denominators
-    //   if (fabs(el.eta()) < 1.0 ) den_ele_pt_EB1->Fill(el.pt());
-    //   if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44 ) den_ele_pt_EB2->Fill(el.pt());
+      if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) den_ele_pt_EE1->Fill(el.pt());
+      if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) den_ele_pt_EE2->Fill(el.pt());
 
-    //   if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) den_ele_pt_EE1->Fill(el.pt());
-    //   if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) den_ele_pt_EE2->Fill(el.pt());
-
-    //   if (el.pt() > 32.) {
-    // 	den_ele_eta->Fill(el.eta());
-    // 	den_ele_phi->Fill(el.phi());
-    // 	occupancy_phi_eta_all->Fill(el.eta(),el.phi());
-    //   }
+      if (el.pt() > 32.) {
+    	den_ele_eta->Fill(el.eta());
+    	den_ele_phi->Fill(el.phi());
+      }
       
 
-    // //Fill numerators                                                                                                                                
-    // if(nmatch_filter>0){
+    //Fill numerators                                                                                                                                
+    if(nmatch_filter>0){
 
-    //   if (fabs(el.eta()) < 1.0 ) num_ele_pt_EB1->Fill(el.pt());
-    //   if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44) num_ele_pt_EB2->Fill(el.pt());
+      if (fabs(el.eta()) < 1.0 ) num_ele_pt_EB1->Fill(el.pt());
+      if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44) num_ele_pt_EB2->Fill(el.pt());
 
-    //   if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) num_ele_pt_EE1->Fill(el.pt());
-    //   if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) num_ele_pt_EE2->Fill(el.pt());
+      if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) num_ele_pt_EE1->Fill(el.pt());
+      if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) num_ele_pt_EE2->Fill(el.pt());
 
-    //   if (el.pt() > 32.) {
-    // 	num_ele_eta->Fill(el.eta());
-    // 	num_ele_phi->Fill(el.phi());
-    // 	occupancy_phi_eta_all->Fill(el.eta(),el.phi());
-    //   }
+      if (el.pt() > 32.) {
+    	num_ele_eta->Fill(el.eta());
+    	num_ele_phi->Fill(el.phi());
+	occupancy_phi_eta_all->Fill(el.eta(),el.phi());
+      }
 
-    // }
+    }
   }
 }
 
