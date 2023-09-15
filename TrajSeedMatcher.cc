@@ -367,7 +367,7 @@ bool TrajSeedMatcher::layerHasValidHits(const DetLayer& layer,
     
     //if (!hitSurState.isValid() && !hitSurState.hasError()) std::cout << "VEEEEEEEEEEEEEEEDI" << std::endl;
     //if(measDet.hasBadComponents(hitSurState)) std::cout << "DET POSITION: " << id.rawId() << std::endl;
-    if (measDet.isActive())// && !measDet.hasBadComponents(hitSurState))
+    if (measDet.isActive() && !measDet.hasBadComponents(hitSurState))
       return true;
     else
       return false;
