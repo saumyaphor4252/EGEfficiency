@@ -38,6 +38,10 @@ and, if everything looks good, launch the Condor jobs via
 
 2024 samples
 ```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/
+cmsrel CMSSW_13_3_3
+cd CMSSW_13_3_3/src
+cmsenv
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/
 cmsenv
 hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL
@@ -53,7 +57,7 @@ cmsRun run_EfficiencyCalculator.py
 ```
 2023 samples
 ```
- cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/
 cmsrel CMSSW_13_0_10
 cd CMSSW_13_0_10/src
 cmsenv
