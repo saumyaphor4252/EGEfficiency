@@ -33,10 +33,37 @@ and, if everything looks good, launch the Condor jobs via
 ```
 ./sub_total.jobb
 ```
-The list of input files has to be specified in `cmsCondorData.py` (not that, at present, things are a bit hardcoded there...).
 
-Once you have all the output files you need, you can run the `EfficiencyCalculator` analyzer from the `TrigTools/test` directory:
+# Working set-up for Run3Winter24 performance and studies
+
+2024 samples
 ```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/
+cmsenv
+hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL
+_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --max-events 50000
+00 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Wint
+er24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrig
+ger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+cmsRun hlt.py
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test
+vi run_EfficiencyCalculator.py # Update dir1 and GT accordingly
 cmsRun run_EfficiencyCalculator.py
+
 ```
-The path to the list of input files has to be specified from within that python config.
+2023 samples
+```
+ cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/
+cmsrel CMSSW_13_0_10
+cd CMSSW_13_0_10/src
+cmsenv
+git cms-init
+git cms-merge-topic Sam-Harper:EGHLTCustomisation_1230pre6
+cp /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/HLTrigger/Configuration/python/Tools/dasFileQuery.py HLTrigger/Configuration/python/Tools/dasFileQuery.py
+hltGetConfiguration /dev/CMSSW_13_0_0/GRun/V140 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v19,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v23,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 130X_mcRun3_2023_realistic_postBPix_v2 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Summer23BPixDRPremix-KeepSi_130X_mcRun3_2023_realistic_postBPix_v2-v3/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+cmsRun hlt.py
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src/EGTools/TrigTools/test
+vi run_EfficiencyCalculator.py # Update dir1 and GT accordingly
+cmsRun run_EfficiencyCalculator.py
+
+```
