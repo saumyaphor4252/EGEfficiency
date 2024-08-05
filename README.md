@@ -67,3 +67,18 @@ vi run_EfficiencyCalculator.py # Update dir1 and GT accordingly
 cmsRun run_EfficiencyCalculator.py
 
 ```
+
+Submit the 2023 samples on condor
+```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src
+cmsenv
+vi hlt.py # Check nevents, output file and input files
+voms-proxy-init --voms cms --valid 168:00
+edmConfigDump hlt.py > hlt_config.py
+cd EGTools/TrigTools/test
+cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+./cmsCondorData.py /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src /eos/user/s/ssaumya/EGammaHLT/Run3Winter/2023_Samples/ -n 20 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+```
+
+
+
