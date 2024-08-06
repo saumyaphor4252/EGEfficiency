@@ -44,7 +44,7 @@ cd CMSSW_13_3_3/src
 cmsenv
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/
 cmsenv
-hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal -mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
 cmsRun hlt.py
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test
 vi run_EfficiencyCalculator.py # Update dir1 and GT accordingly
@@ -78,7 +78,29 @@ edmConfigDump hlt.py > hlt_config.py
 cd EGTools/TrigTools/test
 cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
 ./cmsCondorData.py /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src /eos/user/s/ssaumya/EGammaHLT/Run3Winter/2023_Samples/ -n 20 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+./sub_total.jobb
 ```
 
+
+Making Plots
+```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test
+cmsenv
+vi run_EfficiencyCalculator.py
+## Check Global Tag
+## Check dir1Name: It should be the output.root area
+## Check fileList1: It should match the output file name
+## Update TFileService name to output file name
+cmsRun run_EfficiencyCalculator.py
+# This will produce the root file in the area 
+ls /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test/Efficiency_Modified_2024_06082024.root
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/CMSSW_13_0_10/src/cms-egamma-hlt/phase2/PlotHists
+vi Inputs.py
+# Update path for output plots directory: outPlotDir
+# Update the 2024 file /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test/Efficiency_Modified_2024_06082024.root
+# Comment out the filters
+
+
+```
 
 
