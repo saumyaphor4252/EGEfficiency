@@ -44,12 +44,24 @@ cd CMSSW_13_3_3/src
 cmsenv
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/
 cmsenv
-hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+dasgoclient --query='file dataset=/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW | grep file.name,file.nevents' --limit 400 | awk '{sum += $2} END {print sum}'
+vi HLTrigger/Configuration/python/Tools/dasFileQuery.py
+cd EGTools/TrigTools/test
+hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+#hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+# 
 cmsRun hlt.py
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test
 vi run_EfficiencyCalculator.py # Update dir1 and GT accordingly
 cmsRun run_EfficiencyCalculator.py
 
+```
+For Condor Submission
+```
+voms-proxy-init --valid 100:00
+cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+edmConfigDump hlt.py > hlt_config.py
 ```
 2023 samples
 ```
@@ -60,6 +72,7 @@ cmsenv
 git cms-init
 git cms-merge-topic Sam-Harper:EGHLTCustomisation_1230pre6
 cp /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/HLTrigger/Configuration/python/Tools/dasFileQuery.py HLTrigger/Configuration/python/Tools/dasFileQuery.py
+vi HLTrigger/Configuration/python/Tools/dasFileQuery.py # Check tor update the input files
 hltGetConfiguration /dev/CMSSW_13_0_0/GRun/V140 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v19,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v23,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 130X_mcRun3_2023_realistic_postBPix_v2 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Summer23BPixDRPremix-KeepSi_130X_mcRun3_2023_realistic_postBPix_v2-v3/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
 cmsRun hlt.py
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src/EGTools/TrigTools/test
@@ -72,14 +85,19 @@ Submit the 2023 samples on condor
 ```
 cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src
 cmsenv
-vi hlt.py # Check nevents, output file and input files
-voms-proxy-init --voms cms --valid 168:00
-edmConfigDump hlt.py > hlt_config.py
+vi HLTrigger/Configuration/python/Tools/dasFileQuery.py # Check tor update the input files
 cd EGTools/TrigTools/test
+voms-proxy-init --valid 100:00
 cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
-./cmsCondorData.py /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src /eos/user/s/ssaumya/EGammaHLT/Run3Winter/2023_Samples/ -n 20 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+hltGetConfiguration /dev/CMSSW_13_0_0/GRun/V140 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v19,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v23,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 130X_mcRun3_2023_realistic_postBPix_v2 --max-events -1 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Summer23BPixDRPremix-KeepSi_130X_mcRun3_2023_realistic_postBPix_v2-v3/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+vi hlt.py # Check maxEvents, output.root file and input files fileNames
+edmConfigDump hlt.py > hlt_config.py
+
+./cmsCondorData.py /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_10/src/ /eos/user/s/ssaumya/EGammaHLT/Run3Winter/2023_Samples/ -n 1 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
 ./sub_total.jobb
 ```
+
+
 
 
 Making Plots
@@ -101,6 +119,55 @@ vi Inputs.py
 # Comment out the filters
 
 
+```
+
+
+Final Commands to run on 5 million events
+
+
+2024
+
+```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/EGTools/TrigTools/test
+cmsenv
+voms-proxy-init --valid 100:00
+cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+## Check how many files would be enough for your purpose
+dasgoclient --query='file dataset=/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW | grep file.name,file.nevents' --limit 100
+## Update the --limit argument with that file number :4000 for 3000000 events
+vi ../../../HLTrigger/Configuration/python/Tools/dasFileQuery.py
+# Also print the length of files to make sure it is being used
+hltGetConfiguration /dev/CMSSW_13_0_0/GRun/V140 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v19,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v23,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 130X_mcRun3_2023_realistic_postBPix_v2 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Summer23BPixDRPremix-KeepSi_130X_mcRun3_2023_realistic_postBPix_v2-v3/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+vi hlt.py
+# Check maxEvents, fileNames, and output.root
+edmConfigDump hlt.py > hlt_config.py
+vi ./cmsCondorData.py
+# Check hlt.root, nEvents or maxEvents and output folder will be determined by argument
+# Check how many jobs should be submitted, output file
+./cmsCondorData.py hlt_config.py /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_14/src/ /eos/cms/store/group/phys_egamma/ssaumya/Run3Winter24/2023_Samples/3millionEvents/ -n 15 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+./sub_total.jobb
+```
+
+
+2023
+```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2023_Samples/CMSSW_13_0_14/src/EGTools/TrigTools/test
+cmsenv
+voms-proxy-init --valid 100:00
+cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+## Check how many files would be enough for your purpose
+dasgoclient --query='file dataset=/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Summer23BPixDRPremix-KeepSi_130X_mcRun3_2023_realistic_postBPix_v2-v3/GEN-SIM-RAW | grep file.name,file.nevents' --limit 100
+## Update the --limit argument with that file number :4000 for 3000000 events
+vi ../../../HLTrigger/Configuration/python/Tools/dasFileQuery.py
+# Also print the length of files to make sure it is being used
+hltGetConfiguration /dev/CMSSW_13_3_0/GRun/V22 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 133X_mcRun3_2024_realistic_v8 --max-events 5000000 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2023_v1_2_0_xml --input dataset:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24Digi-KeepSi_133X_mcRun3_2024_realistic_v8-v2/GEN-SIM-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+# Check maxEvents, fileNames, and output.root
+edmConfigDump hlt.py > hlt_config.py
+vi ./cmsCondorData.py
+# Check hlt.root, nEvents or maxEvents and output folder will be determined by argument
+# Check how many jobs should be submitted, output file
+./cmsCondorData.py hlt_config.py /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/2024_Samples/CMSSW_13_3_3/src/ /eos/cms/store/group/phys_egamma/ssaumya/Run3Winter24/2024_Samples/3millionEvents/ -n 20 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+./sub_total.jobb
 ```
 
 
