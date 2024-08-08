@@ -35,6 +35,9 @@ and, if everything looks good, launch the Condor jobs via
 ```
 
 # Working set-up for Run3Winter24 performance and studies
+GT difference: https://cms-conddb.cern.ch/cmsDbBrowser/diff/Prod/gts/130X_mcRun3_2023_realistic_postBPix_v2/133X_mcRun3_2024_realistic_v8
+
+
 
 2024 samples
 ```
