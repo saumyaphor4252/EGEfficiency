@@ -175,3 +175,11 @@ vi ./cmsCondorData.py
 ```
 
 
+Drivers for testing new samples 
+https://cms-pdmv-prod.web.cern.ch/mcm/public/restapi/requests/get_setup/TSG-Run3Summer23BPixDRPremix-00005
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/Test_Samples/CMSSW_13_3_3/src
+```
+
+```
+
+
