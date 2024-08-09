@@ -176,9 +176,16 @@ vi ./cmsCondorData.py
 
 
 Drivers for testing new samples 
-https://cms-pdmv-prod.web.cern.ch/mcm/public/restapi/requests/get_setup/TSG-Run3Summer23BPixDRPremix-00005
-cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/Test_Samples/CMSSW_13_3_3/src
+Drivers for GEN-SIM-RAW: https://cms-pdmv-prod.web.cern.ch/mcm/public/restapi/requests/get_setup/TSG-Run3Winter24Digi-00001
+
 ```
+cd /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/Test_Samples/
+cmsrel CMSSW_13_3_0
+cd CMSSW_13_3_0/src
+cmsenv
+voms-proxy-init --valid 100:00
+#cmsDriver.py  --python_filename TSG-Run3Winter24Digi-00001_1_cfg.py --eventcontent RAWSIM --pileup 2023_LHC_Simulation_12p5h_9h_hybrid2p23 --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-RAW --fileout file:TSG-Run3Winter24Digi-00001.root --pileup_input "dbs:/MinBias_TuneCP5_13p6TeV-pythia8/Run3Winter24GS-133X_mcRun3_2024_realistic_v7-v1/GEN-SIM" --conditions 133X_mcRun3_2024_realistic_v8 --customise_commands "process.RAWSIMoutput.outputCommands.extend(['keep *_simSiStripDigis*_*_*', 'keep *_simSiPixelDigis*_*_*'])" --step DIGI,L1,DIGI2RAW,HLT:2023v12 --geometry DB:Extended --filein "dbs:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24GS-133X_mcRun3_2024_realistic_v7-v1/GEN-SIM" --era Run3_2023 --no_exec --mc -n 10
+
 
 ```
 
