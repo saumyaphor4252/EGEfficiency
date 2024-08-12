@@ -190,6 +190,10 @@ cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
 cmsDriver.py --filein file:/eos/cms/store/mc/Run3Winter24GS/MinBias_TuneCP5_13p6TeV-pythia8/GEN-SIM/133X_mcRun3_2024_realistic_v7-v1/60001/4c97601b-ad3e-449a-b556-b4b72fa4a084.root --fileout file:your_output_file.root --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW --conditions 130X_mcRun3_2023_realistic_postBPix_v2 --step DIGI,L1,DIGI2RAW,HLT:2023v12 --geometry DB:Extended --era Run3_2023 --nThreads 4 --python_filename Test1.py -n 10 --pileup 2023_LHC_Simulation_12p5h_9h_hybrid2p23 --pileup_input "dbs:/MinBias_TuneCP5_13p6TeV-pythia8/Run3Winter24GS-133X_mcRun3_2024_realistic_v7-v1/GEN-SIM" --no exec
 #Update the Test1.py as needed
 cmsRun Test1.py
+cmsDriver.py --filein "dbs:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24GS-133X_mcRun3_2024_realistic_v7-v2/GEN-SIM" --fileout file:your_output_file.root --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW --conditions 130X_mcRun3_2023_realistic_postBPix_v2 --step DIGI,L1,DIGI2RAW,HLT:2023v12 --geometry DB:Extended --era Run3_2023 --nThreads 4 --python_filename Test2.py -n 10 --pileup 2023_LHC_Simulation_12p5h_9h_hybrid2p23 --pileup_input "dbs:/MinBias_TuneCP5_13p6TeV-pythia8/Run3Winter24GS-133X_mcRun3_2024_realistic_v7-v1/GEN-SIM" --no_exec
+#Update the Test1.py as needed
+### No change in the GT
+
 
 ```
 
