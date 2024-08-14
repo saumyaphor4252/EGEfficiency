@@ -197,4 +197,10 @@ cmsDriver.py --filein "dbs:/DYto2L_M-50_TuneCP5_13p6TeV_pythia8/Run3Winter24GS-1
 
 ```
 
+EOS and work areas for test Files:
+```
+/eos/cms/store/group/phys_egamma/ssaumya/Run3Winter24/RAW-DIGI_Private_Samples/
+/afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/Test_Samples/CMSSW_13_3_0/src/Test_133X_with_130XGT_HcalResponse
+```
+
 
