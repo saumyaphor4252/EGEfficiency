@@ -14,24 +14,22 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '131X_mcRun3_2023_realistic_for
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
-#dir1Name = "/afs/cern.ch/user/r/rselvati/work/private/testBPIX/CMSSW_13_0_10/src/SteamRatesEdmWorkflow/Prod/hltGrun/"
-dir1Name = "/afs/cern.ch/user/r/rselvati/work/private/testBPIX/CMSSW_13_0_10/src/SteamRatesEdmWorkflow/Prod/hltModified/"
+# dir1Name = "/afs/cern.ch/user/r/rselvati/work/private/testBPIX/CMSSW_13_0_10/src/SteamRatesEdmWorkflow/Prod/hltModified/"
 # dir2Name = "/eos/cms/store/mc/Run3Summer22EEDR/ZprimeToEE_M-6000_TuneCP5_13p6TeV-pythia8/GEN-SIM-RAW/Poisson70KeepRAW_124X_mcRun3_2022_realistic_postEE_v1-v1/720000/"
-fileList1 = filter(os.path.isfile, glob.glob(dir1Name + "*.root"))
+# fileList1 = filter(os.path.isfile, glob.glob(dir1Name + "*.root"))
 # fileList2 = filter(os.path.isfile, glob.glob(dir2Name + "*.root"))
-fList = []
-for f in fileList1:
-     fs = str(f).replace("/afs/","file:/afs/")
-     fList.append(fs)
+# fList = []
+# for f in fileList1:
+#      fs = str(f).replace("/afs/","file:/afs/")
+#      fList.append(fs)
 # for f in fileList2:
 #     fs = str(f).replace("/eos/","file:/eos/")
 #     fList.append(fs)
 # print(fList)
 #from list_relval import fileList
 process.source = cms.Source("PoolSource",
-                                fileNames = cms.untracked.vstring(fList
-                                    #'root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleElectron/MINIAOD/17Jul2018_ver2-v1/80000/FEAB7D8A-048C-E811-A513-AC1F6B1AEFFC.root'
-            #'file:/eos/cms/store/group/phys_egamma/swmukher/hlt_12_3/WithCaloTower/ZprimeToEE_M-6000_TuneCP5_14TeV-pythia8/crab_crab_ZprimeToEE_1/220129_064015/0000/output_192.root'
+                                fileNames = cms.untracked.vstring(#fList
+                                    'root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleElectron/MINIAOD/17Jul2018_ver2-v1/80000/FEAB7D8A-048C-E811-A513-AC1F6B1AEFFC.root'
                 )
                             )
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')

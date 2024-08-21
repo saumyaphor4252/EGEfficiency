@@ -52,7 +52,7 @@ private:
   edm::EDGetTokenT<std::vector<trigger::EgammaObject> > eleToken_;
   edm::EDGetTokenT<edm::TriggerResults > hltToken_;
   edm::EDGetTokenT<trigger::TriggerEvent > hltsevtToken_;
-  edm::EDGetTokenT<std::vector<reco::GenParticle> > genToken_;
+  //edm::EDGetTokenT<std::vector<reco::GenParticle> > genToken_;
   edm::EDGetTokenT<trigger::TriggerFilterObjectWithRefs > L1Token_;
   //edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupSummaryToken_;
   edm::Service<TFileService> fs;
@@ -93,20 +93,20 @@ EfficiencyCalculator::EfficiencyCalculator(const edm::ParameterSet& iConfig):
   eleToken_     = consumes<std::vector<trigger::EgammaObject> >(edm::InputTag("hltEgammaHLTExtra","","HLTX"));
   hltToken_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLTX"));
   hltsevtToken_ = consumes<trigger::TriggerEvent>(edm::InputTag("hltTriggerSummaryAOD","","HLTX"));
-  genToken_     = consumes<std::vector<reco::GenParticle> >(edm::InputTag("genParticles"));
+  //genToken_     = consumes<std::vector<reco::GenParticle> >(edm::InputTag("genParticles"));
   //pileupSummaryToken_ = consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo"));
   
 
   // pT
-  num_ele_pt_EB1 = fs->make<TH1D>("num_ele_pt_EB1",";pT (GeV);Events",100,0,500);
-  num_ele_pt_EB2 = fs->make<TH1D>("num_ele_pt_EB2",";pT (GeV);Events",100,0,500);
-  num_ele_pt_EE1 = fs->make<TH1D>("num_ele_pt_EE1",";pT (GeV);Events",100,0,500);
-  num_ele_pt_EE2 = fs->make<TH1D>("num_ele_pt_EE2",";pT (GeV);Events",100,0,500);
+  num_ele_pt_EB1 = fs->make<TH1D>("num_ele_pt_EB1",";pT (GeV);Events",50,0,500);
+  num_ele_pt_EB2 = fs->make<TH1D>("num_ele_pt_EB2",";pT (GeV);Events",50,0,500);
+  num_ele_pt_EE1 = fs->make<TH1D>("num_ele_pt_EE1",";pT (GeV);Events",50,0,500);
+  num_ele_pt_EE2 = fs->make<TH1D>("num_ele_pt_EE2",";pT (GeV);Events",50,0,500);
 
-  den_ele_pt_EB1 = fs->make<TH1D>("den_ele_pt_EB1",";pT (GeV);Events",100,0,500);
-  den_ele_pt_EB2 = fs->make<TH1D>("den_ele_pt_EB2",";pT (GeV);Events",100,0,500);
-  den_ele_pt_EE1 = fs->make<TH1D>("den_ele_pt_EE1",";pT (GeV);Events",100,0,500);
-  den_ele_pt_EE2 = fs->make<TH1D>("den_ele_pt_EE2",";pT (GeV);Events",100,0,500);
+  den_ele_pt_EB1 = fs->make<TH1D>("den_ele_pt_EB1",";pT (GeV);Events",50,0,500);
+  den_ele_pt_EB2 = fs->make<TH1D>("den_ele_pt_EB2",";pT (GeV);Events",50,0,500);
+  den_ele_pt_EE1 = fs->make<TH1D>("den_ele_pt_EE1",";pT (GeV);Events",50,0,500);
+  den_ele_pt_EE2 = fs->make<TH1D>("den_ele_pt_EE2",";pT (GeV);Events",50,0,500);
 
   // eta
   num_ele_eta = fs->make<TH1D>("num_ele_eta",";eta;Events",53,-2.65,2.65);
@@ -231,8 +231,8 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   edm::Handle<trigger::TriggerEvent > hltsevt;
   iEvent.getByToken(hltsevtToken_,hltsevt);
 
-  edm::Handle<std::vector<reco::GenParticle> > gen;
-  iEvent.getByToken(genToken_,gen);
+  //edm::Handle<std::vector<reco::GenParticle> > gen;
+  //iEvent.getByToken(genToken_,gen);
 
   // edm::Handle<std::vector<PileupSummaryInfo> >  PUInfo;
   // iEvent.getByToken(pileupSummaryToken_, PUInfo);
@@ -248,39 +248,37 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   //   }
   // }
   
-
-  //auto eg_trig_objs_filter = getListFilterPassedObj("hltEGL1SingleEGOrFilter",*hltsevt.product());
   auto eg_trig_objs_filter = getListFilterPassedObj("hltEle32WPTightGsfTrackIsoFilter",*hltsevt.product());
 
   auto electrons = ele.product();
  
-  //if(electrons->size() < 2) return;
+  if(electrons->size() < 2) return;
 
-  //std::cout << globCounter << std::endl;
+  std::cout << globCounter << std::endl;
 
-  // std::vector<trigger::EgammaObject> listOfTags;
+  std::vector<trigger::EgammaObject> listOfTags;
 
-  // for(auto& el : *electrons){
+  for(auto& el : *electrons){
 
-  //   if(fabs(el.eta()) > barrel_end_ || el.pt() < 32.) continue;
+    if(fabs(el.eta()) > barrel_end_ || el.pt() < 32.) continue;
 
-  //   auto matchedTrigObjs = matchTrigObjs(el.eta(),el.phi(),el.pt(),eg_trig_objs_filter);
+    auto matchedTrigObjs = matchTrigObjs(el.eta(),el.phi(),el.pt(),eg_trig_objs_filter);
     
-  //   if(matchedTrigObjs.size() > 0) listOfTags.push_back(el);
-  // }
+    if(matchedTrigObjs.size() > 0) listOfTags.push_back(el);
+  }
 
   for(auto& el : *electrons){
 
     if(fabs(el.eta()) > endcap_end_) continue;
 
-    // for(auto tag : listOfTags){
+    for(auto tag : listOfTags){
 
-    //   float invMass = calculateInvMass(tag, el);
-    //   if(fabs(invMass - 91.1876) < 30. && tag.id()*el.id() < 0) break;
-    //   else return;
-    // }
+      float invMass = calculateInvMass(tag, el);
+      if(fabs(invMass - 91.1876) < 30. && tag.id()*el.id() < 0) break;
+      else return;
+    }
 
-    if(!matchToGen(el.eta(),el.phi(),*(gen.product()))) continue;
+    //if(!matchToGen(el.eta(),el.phi(),*(gen.product()))) continue;
 
     auto matched_objs_filter = matchTrigObjs(el.eta(),el.phi(),el.pt(),eg_trig_objs_filter);
     auto nmatch_filter = matched_objs_filter.size();
