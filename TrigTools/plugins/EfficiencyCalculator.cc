@@ -9,7 +9,7 @@
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "DataFormats/HLTReco/interface/EgammaObject.h"
-#include "L1Trigger/L1TGlobal/plugins/L1TGlobalProducer.h"
+//#include "L1Trigger/L1TGlobal/plugins/L1TGlobalProducer.h"
 //#include "HLTrigger/Egamma/plugins/HLTEgammaL1TMatchFilterRegional.cc"
 #include "CondFormats/DataRecord/interface/L1TGlobalParametersRcd.h"
 #include "DataFormats/HLTReco/interface/TriggerFilterObjectWithRefs.h"
@@ -52,7 +52,7 @@ private:
   edm::EDGetTokenT<std::vector<trigger::EgammaObject> > eleToken_;
   edm::EDGetTokenT<edm::TriggerResults > hltToken_;
   edm::EDGetTokenT<trigger::TriggerEvent > hltsevtToken_;
-  //edm::EDGetTokenT<std::vector<reco::GenParticle> > genToken_;
+  edm::EDGetTokenT<std::vector<reco::GenParticle> > genToken_;
   edm::EDGetTokenT<trigger::TriggerFilterObjectWithRefs > L1Token_;
   //edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupSummaryToken_;
   edm::Service<TFileService> fs;
@@ -61,6 +61,9 @@ private:
   TH1D* num_ele_pt_EB2;
   TH1D* num_ele_pt_EE1;
   TH1D* num_ele_pt_EE2;
+  TH1D* num_ele_pt_EB;
+  TH1D* num_ele_pt_EE;
+  TH1D* num_ele_pt;
   TH1D* num_ele_eta;
   TH1D* num_ele_phi;
   TH1D* num_ele_pu;
@@ -69,6 +72,9 @@ private:
   TH1D* den_ele_pt_EB2;
   TH1D* den_ele_pt_EE1;
   TH1D* den_ele_pt_EE2;
+  TH1D* den_ele_pt_EB;
+  TH1D* den_ele_pt_EE;
+  TH1D* den_ele_pt;
   TH1D* den_ele_eta;
   TH1D* den_ele_phi;
   TH1D* den_ele_pu;
@@ -93,31 +99,38 @@ EfficiencyCalculator::EfficiencyCalculator(const edm::ParameterSet& iConfig):
   eleToken_     = consumes<std::vector<trigger::EgammaObject> >(edm::InputTag("hltEgammaHLTExtra","","HLTX"));
   hltToken_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLTX"));
   hltsevtToken_ = consumes<trigger::TriggerEvent>(edm::InputTag("hltTriggerSummaryAOD","","HLTX"));
-  //genToken_     = consumes<std::vector<reco::GenParticle> >(edm::InputTag("genParticles"));
+  genToken_     = consumes<std::vector<reco::GenParticle> >(edm::InputTag("genParticles"));
   //pileupSummaryToken_ = consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo"));
   
-
+  // Define all the histograms to be filled
   // pT
-  num_ele_pt_EB1 = fs->make<TH1D>("num_ele_pt_EB1",";pT (GeV);Events",50,0,500);
-  num_ele_pt_EB2 = fs->make<TH1D>("num_ele_pt_EB2",";pT (GeV);Events",50,0,500);
-  num_ele_pt_EE1 = fs->make<TH1D>("num_ele_pt_EE1",";pT (GeV);Events",50,0,500);
-  num_ele_pt_EE2 = fs->make<TH1D>("num_ele_pt_EE2",";pT (GeV);Events",50,0,500);
+  num_ele_pt_EB1  = fs->make<TH1D>("num_ele_pt_EB1",";pT (GeV);Events",200,0,500);
+  num_ele_pt_EB2  = fs->make<TH1D>("num_ele_pt_EB2",";pT (GeV);Events",200,0,500);
+  num_ele_pt_EB   = fs->make<TH1D>("num_ele_pt_EB",";pT (GeV);Events",200,0,500);
+  num_ele_pt_EE1  = fs->make<TH1D>("num_ele_pt_EE1",";pT (GeV);Events",200,0,500);
+  num_ele_pt_EE2  = fs->make<TH1D>("num_ele_pt_EE2",";pT (GeV);Events",200,0,500);
+  num_ele_pt_EE   = fs->make<TH1D>("num_ele_pt_EE",";pT (GeV);Events",200,0,500);
+  num_ele_pt      = fs->make<TH1D>("num_ele_pt",";pT (GeV);Events",200,0,500);
 
-  den_ele_pt_EB1 = fs->make<TH1D>("den_ele_pt_EB1",";pT (GeV);Events",50,0,500);
-  den_ele_pt_EB2 = fs->make<TH1D>("den_ele_pt_EB2",";pT (GeV);Events",50,0,500);
-  den_ele_pt_EE1 = fs->make<TH1D>("den_ele_pt_EE1",";pT (GeV);Events",50,0,500);
-  den_ele_pt_EE2 = fs->make<TH1D>("den_ele_pt_EE2",";pT (GeV);Events",50,0,500);
+  den_ele_pt_EB1  = fs->make<TH1D>("den_ele_pt_EB1",";pT (GeV);Events",200,0,500);
+  den_ele_pt_EB2  = fs->make<TH1D>("den_ele_pt_EB2",";pT (GeV);Events",200,0,500);
+  den_ele_pt_EB   = fs->make<TH1D>("den_ele_pt_EB",";pT (GeV);Events",200,0,500);
+  den_ele_pt_EE1  = fs->make<TH1D>("den_ele_pt_EE1",";pT (GeV);Events",200,0,500);
+  den_ele_pt_EE2  = fs->make<TH1D>("den_ele_pt_EE2",";pT (GeV);Events",200,0,500);
+  den_ele_pt_EE   = fs->make<TH1D>("den_ele_pt_EE",";pT (GeV);Events",200,0,500);
+  den_ele_pt      = fs->make<TH1D>("den_ele_pt",";pT (GeV);Events",200,0,500);
 
   // eta
-  num_ele_eta = fs->make<TH1D>("num_ele_eta",";eta;Events",53,-2.65,2.65);
-  den_ele_eta = fs->make<TH1D>("den_ele_eta",";eta;Events",53,-2.65,2.65);
+  num_ele_eta     = fs->make<TH1D>("num_ele_eta",";eta;Events",53,-2.65,2.65);
+  den_ele_eta     = fs->make<TH1D>("den_ele_eta",";eta;Events",53,-2.65,2.65);
 
   // phi
-  num_ele_phi = fs->make<TH1D>("num_ele_phi",";phi;Events",63,-3.15,3.15);
-  den_ele_phi = fs->make<TH1D>("den_ele_phi",";phi;Events",63,-3.15,3.15);
+  num_ele_phi     = fs->make<TH1D>("num_ele_phi",";phi;Events",63,-3.15,3.15);
+  den_ele_phi     = fs->make<TH1D>("den_ele_phi",";phi;Events",63,-3.15,3.15);
+
+  // occupancy
   occupancy_phi_eta_all = fs->make<TH2D>("occupancy_phi_eta_all",";#eta_{SC};#phi",50,-2.5,2.5,32,-3.2,3.2);
 }
-
 
 const int getFilterIndex(const trigger::TriggerEvent& trigEvt, const std::string filterName){
   for(auto i=0; i < trigEvt.sizeFilters(); i++){
@@ -141,7 +154,6 @@ std::vector<const trigger::TriggerObject*> getListFilterPassedObj(const std::str
   }
   return eg_trig_objs;
 }
-
 
 std::vector<const trigger::TriggerObject*> matchTrigObjs(const float eta,const float phi,const float pT,std::vector<const trigger::TriggerObject*> trigObjs,const float maxDeltaR=0.1, const float maxDpT=0.1)
 {
@@ -195,7 +207,6 @@ float matchToGen(const float eta,const float phi,const std::vector<reco::GenPart
   return best_pt;
 }
 
-
 float calculateInvMass(const trigger::EgammaObject tagElectron, const trigger::EgammaObject probeCandidate) {
 
   TLorentzVector tag;
@@ -209,8 +220,6 @@ float calculateInvMass(const trigger::EgammaObject tagElectron, const trigger::E
   return invMass;
 
 }
-
-
 
 //we need to initalise the menu each run (menu can and will change on run boundaries)
 void EfficiencyCalculator::beginRun(const edm::Run& run,const edm::EventSetup& setup)
@@ -231,8 +240,8 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   edm::Handle<trigger::TriggerEvent > hltsevt;
   iEvent.getByToken(hltsevtToken_,hltsevt);
 
-  //edm::Handle<std::vector<reco::GenParticle> > gen;
-  //iEvent.getByToken(genToken_,gen);
+  edm::Handle<std::vector<reco::GenParticle> > gen;
+  iEvent.getByToken(genToken_,gen);
 
   // edm::Handle<std::vector<PileupSummaryInfo> >  PUInfo;
   // iEvent.getByToken(pileupSummaryToken_, PUInfo);
@@ -248,68 +257,89 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   //   }
   // }
   
+
+  //auto eg_trig_objs_filter = getListFilterPassedObj("hltEGL1SingleEGOrFilter",*hltsevt.product());
   auto eg_trig_objs_filter = getListFilterPassedObj("hltEle32WPTightGsfTrackIsoFilter",*hltsevt.product());
 
   auto electrons = ele.product();
  
-  if(electrons->size() < 2) return;
+  //if(electrons->size() < 2) return;
 
-  std::cout << globCounter << std::endl;
-
-  std::vector<trigger::EgammaObject> listOfTags;
-
-  for(auto& el : *electrons){
-
-    if(fabs(el.eta()) > barrel_end_ || el.pt() < 32.) continue;
-
-    auto matchedTrigObjs = matchTrigObjs(el.eta(),el.phi(),el.pt(),eg_trig_objs_filter);
-    
-    if(matchedTrigObjs.size() > 0) listOfTags.push_back(el);
-  }
+  //std::cout << globCounter << std::endl;
+  // std::vector<trigger::EgammaObject> listOfTags;
+  // for(auto& el : *electrons){
+  //   if(fabs(el.eta()) > barrel_end_ || el.pt() < 32.) continue;
+  //   auto matchedTrigObjs = matchTrigObjs(el.eta(),el.phi(),el.pt(),eg_trig_objs_filter);
+  //   if(matchedTrigObjs.size() > 0) listOfTags.push_back(el);
+  // }
 
   for(auto& el : *electrons){
 
     if(fabs(el.eta()) > endcap_end_) continue;
 
-    for(auto tag : listOfTags){
+    // for(auto tag : listOfTags){
 
-      float invMass = calculateInvMass(tag, el);
-      if(fabs(invMass - 91.1876) < 30. && tag.id()*el.id() < 0) break;
-      else return;
-    }
+    //   float invMass = calculateInvMass(tag, el);
+    //   if(fabs(invMass - 91.1876) < 30. && tag.id()*el.id() < 0) break;
+    //   else return;
+    // }
 
-    //if(!matchToGen(el.eta(),el.phi(),*(gen.product()))) continue;
+    if(!matchToGen(el.eta(),el.phi(),*(gen.product()))) continue;
 
     auto matched_objs_filter = matchTrigObjs(el.eta(),el.phi(),el.pt(),eg_trig_objs_filter);
     auto nmatch_filter = matched_objs_filter.size();
     
-
     //Fill denominators
-      if (fabs(el.eta()) < 1.0 ) den_ele_pt_EB1->Fill(el.pt());
-      if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44 ) den_ele_pt_EB2->Fill(el.pt());
+    if (fabs(el.eta()) < 1.0 ) 
+		den_ele_pt_EB1->Fill(el.pt());  
+    if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44 ) 
+		den_ele_pt_EB2->Fill(el.pt());
+	if (fabs(el.eta()) < 1.44) 
+		den_ele_pt_EB->Fill(el.pt());
 
-      if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) den_ele_pt_EE1->Fill(el.pt());
-      if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) den_ele_pt_EE2->Fill(el.pt());
+	if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) 
+		den_ele_pt_EE1->Fill(el.pt());
+    if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) 
+		den_ele_pt_EE2->Fill(el.pt());
+    if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5) 
+		den_ele_pt_EE->Fill(el.pt());
 
-      if (el.pt() > 32.) {
-    	den_ele_eta->Fill(el.eta());
+    if ( (fabs(el.eta()) < 1.44) || (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5)) 
+		den_ele_pt->Fill(el.pt());
+
+    if (el.pt() > 32.) {
+		den_ele_eta->Fill(el.eta());
     	den_ele_phi->Fill(el.phi());
-      }
+    }
       
-
-    //Fill numerators                                                                                                                                
+    //Fill numerators                                                                                                                           
     if(nmatch_filter>0){
 
-      if (fabs(el.eta()) < 1.0 ) num_ele_pt_EB1->Fill(el.pt());
-      if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44) num_ele_pt_EB2->Fill(el.pt());
+	  // Barrel	
+      if (fabs(el.eta()) < 1.0 ) 
+		  num_ele_pt_EB1->Fill(el.pt());
+      if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44) 
+		  num_ele_pt_EB2->Fill(el.pt());
+	  if (fabs(el.eta()) < 1.44 ) 
+		  num_ele_pt_EB->Fill(el.pt());
 
-      if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) num_ele_pt_EE1->Fill(el.pt());
-      if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) num_ele_pt_EE2->Fill(el.pt());
+	  // Endcap
+      if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) 
+		  num_ele_pt_EE1->Fill(el.pt());
+      if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) 
+		  num_ele_pt_EE2->Fill(el.pt());
+	  if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5) 
+		  num_ele_pt_EE->Fill(el.pt());
+
+      // Full
+	  if ( (fabs(el.eta()) < 1.44) || (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5)) 
+		  num_ele_pt->Fill(el.pt());
 
       if (el.pt() > 32.) {
     	num_ele_eta->Fill(el.eta());
     	num_ele_phi->Fill(el.phi());
-	occupancy_phi_eta_all->Fill(el.eta(),el.phi());
+
+	    occupancy_phi_eta_all->Fill(el.eta(),el.phi());
       }
 
     }

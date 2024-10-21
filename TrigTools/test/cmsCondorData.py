@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys, re, pprint, string,imp
+import os, sys, re, pprint, string, imp
 from optparse import OptionParser
 #import importlib as imp
 # cms specific
@@ -10,8 +10,6 @@ import time
 import datetime
 import os
 import sys
-
-nEvents=-1
 
 MYDIR=os.getcwd()
 #folder = '/store/group/dpg_trigger/comm_trigger/TriggerStudiesGroup/STEAM/Summer16_FlatPU28to62/HLTRates_v4p2_V2_1p25e34_MC_2017feb09J'
@@ -64,24 +62,21 @@ cfo = imp.load_source("pycfg", cfgFileName, handle)
 process = cfo.process
 handle.close()
 
-from hlt_standard import *
+from hlt_config import *
 
 # Input
-from list_relval import fileList
-process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring(fileList),
-    inputCommands = cms.untracked.vstring('keep *')
-)
-
+#from list_relval import fileList
+#process.source = cms.Source("PoolSource",
+#                            fileNames = cms.untracked.vstring(fileList),
+#    inputCommands = cms.untracked.vstring('keep *')
+#)
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32( nEvents )
+    input = cms.untracked.int32(-1)
 )
-
 process.hltOutputMinimal.fileName = "hlt.root"
 
 # keep track of the original source
 fullSource = process.source.clone()
-
 
 nJobs = -1
 
@@ -142,25 +137,10 @@ for i in range(0, nJobs):
     iFileMax = (i+1)*opts.nPerJob
           
     process.source.fileNames = fullSource.fileNames[iFileMin:iFileMax]
-    
-    #os.system("cp hlt_standard.py "+jobDir)
-    tmp_cfgFile = open(jobDir+'/run_cfg.py','w') 
-    line_index = -1
-    with open("hlt_standard.py","r") as f:
-        L = f.readlines()
-        for line in L:
-            line_index += 1
-            if line.strip().startswith("_customInfo['inputFile' ]="):
-                #print(fileList[i])
-                L[line_index] = "_customInfo['inputFile' ]= [\""+fileList[i]+"\"]\n"
-            if line.strip().startswith("'/store/relval/CMSSW_13_0_11/RelValZEE_14/GEN-SIM-DIGI-RAW/"):
-                L[line_index] = "\"" + fileList[i] + "\""
-        tmp_cfgFile.writelines(L)
+          
+    tmp_cfgFile = open(jobDir+'/run_cfg.py','w')
+    tmp_cfgFile.write(process.dumpPython())
     tmp_cfgFile.close()
-    
-    #tmp_cfgFile = open(jobDir+'/run_cfg.py','w')
-    #tmp_cfgFile.write(process.dumpPython())
-    #tmp_cfgFile.close()
     
 
 
@@ -174,6 +154,9 @@ condor_str += "output = $Fp(filename)hlt.stdout\n"
 condor_str += "error = $Fp(filename)hlt.stderr\n"
 condor_str += "log = $Fp(filename)hlt.log\n"
 condor_str += '+JobFlavour = "%s"\n'%opts.jobFlavour
+# Adding the requirements line                                                                                                            
+#requirements = "(OpSysAndVer =?= \"CentOS7\")"
+#condor_str += f"requirements = {requirements}\n"
 condor_str += "queue filename matching ("+MYDIR+"/Jobs/Job_*/*.sh)"
 condor_name = MYDIR+"/condor_cluster.sub"
 condor_file = open(condor_name, "w")

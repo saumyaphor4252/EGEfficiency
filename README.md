@@ -2,41 +2,38 @@
 
 To set up the repository:
 ```
-cmsrel CMSSW_13_0_10
-cd CMSSW_13_0_10/src
+cmsrel CMSSW_14_0_9
+cd CMSSW_14_0_9/src
 cmsenv
 voms-proxy-init --voms cms
+cp /tmp/x509up_u122184 /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
 git cms-init
 git cms-merge-topic Sam-Harper:EGHLTCustomisation_1230pre6
 git clone git@github.com:RSalvatico/EGEfficiency.git EGTools
-scram b -j 4
-```
+# Update HLTrigger/Configuration/python/Tools/dasFileQuery.py
+vi HLTrigger/Configuration/python/Tools/dasFileQuery.py
+scram b -j 10
+cd EGTools/TrigTools/test
 
-Running a trigger on raw files and measuring its efficiency is a two-steps process. First, you have to dump the desired trigger configuration and run it, taking care of saving all the needed collections for further analysis. Second, you can run on the results of the first part and calculate efficiencies, occupancies, etc.
-
-An example of `hltGetConfiguration` that can be used for this:
-```
-hltGetConfiguration /dev/CMSSW_13_0_0/GRun/V140 --path HLTriggerFirstPath,HLT_Ele32_WPTight_Gsf_v19,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 131X_mcRun3_2023_realistic_forEGamma_v1 --max-events -1 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2022_v1_3_0-d1_xml --input /store/relval/CMSSW_13_0_11/RelValZEE_14/GEN-SIM-DIGI-RAW/PU_131X_mcRun3_2023_realistic_forEGamma_v1_RV209-v2/2580000/9f41598a-a01c-4a6c-9126-aedeb18eefe1.root --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
-```
-
-In the `TrigTools/test` directory of this repo there is already one of such files, called `hlt_standard.py`. This can be modified according to the needs.
-
-In order to run this script on several input files on HT Condor, one can do
-```
-./cmsCondorData.py hlt_standard.py #path_to_your_src #path_to_output_folder -n 1 -q workday -p #path_to_your_grid_proxy (for example mine is /afs/cern.ch/user/r/rselvati/private/x509up)
-``` 
-You can check whether one job would run fine locally by doing
-```
-./Jobs/Job_0/sub_0.sh
-```
-and, if everything looks good, launch the Condor jobs via
-```
+### Reference
+hltGetConfiguration /dev/CMSSW_14_0_0/GRun/V156 --path HLTriggerFirstPath,HLT_Ele30_WPTight_Gsf_v7,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele115_CaloIdVT_GsfTrkIdT_v21,HLT_Ele135_CaloIdVT_GsfTrkIdT_v14,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLT_DoubleEle33_CaloIdL_MW_v24,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 140X_mcRun3_2024_realistic_v14 --max-events -1 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2024_v1_2_0_xml --input dataset:/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_v14_RV245_2024-v1/GEN-SIM-DIGI-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt.py
+vi hlt.py # Check maxEvents, output.root file and input files fileNames
+edmConfigDump hlt.py > hlt_config_Reference.py
+./cmsCondorData.py hlt_config_Reference.py /afs/cern.ch/work/s/ssaumya/private/Egamma/TrackerStudies/CMSSW_14_0_9/src/ /eos/user/s/ssaumya/EGammaHLT/Run3Winter/TrackerStudies/Reference -n 15 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_<XYZ>
 ./sub_total.jobb
-```
-The list of input files has to be specified in `cmsCondorData.py` (not that, at present, things are a bit hardcoded there...).
 
-Once you have all the output files you need, you can run the `EfficiencyCalculator` analyzer from the `TrigTools/test` directory:
+### Scenario 1
+hltGetConfiguration /dev/CMSSW_14_0_0/GRun/V156 --path HLTriggerFirstPath,HLT_Ele30_WPTight_Gsf_v7,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele115_CaloIdVT_GsfTrkIdT_v21,HLT_Ele135_CaloIdVT_GsfTrkIdT_v14,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLT_DoubleEle33_CaloIdL_MW_v24,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 140X_mcRun3_2024_realistic_EOR3_TkDPGv2 --max-events -1 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2024_v1_2_0_xml --input dataset:/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv2_RV245_2024-v4/GEN-SIM-DIGI-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt1.py
+edmConfigDump hlt.py > hlt_config_EOR3_v1.py
+./cmsCondorData.py hlt_config_EOR3_v1.py /afs/cern.ch/work/s/ssaumya/private/Egamma/TrackerStudies/CMSSW_14_0_9/src/ /eos/user/s/ssaumya/EGammaHLT/Run3Winter/TrackerStudies/EOR31 -n 15 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+./sub_total.jobb
+
+### Scenario 2
+hltGetConfiguration /dev/CMSSW_14_0_0/GRun/V156 --path HLTriggerFirstPath,HLT_Ele30_WPTight_Gsf_v7,HLT_Ele32_WPTight_Gsf_v21,HLT_Ele115_CaloIdVT_GsfTrkIdT_v21,HLT_Ele135_CaloIdVT_GsfTrkIdT_v14,HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v25,HLT_DoubleEle33_CaloIdL_MW_v24,HLTriggerFinalPath --output minimal --mc --process HLTX --type GRun --globaltag 140X_mcRun3_2024_realistic_EOR3_TkDPGv6 --max-events -1 --unprescale --eras Run3 --l1-emulator FullMC --l1 L1Menu_Collisions2024_v1_2_0_xml --input dataset:/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv6_RV245_2024-v1/GEN-SIM-DIGI-RAW --customise HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaMenuDev,HLTrigger/Configuration/customizeHLTforEGamma.customiseEGammaInputContent > hlt2.py
+edmConfigDump hlt.py > hlt_config_EOR3_v2.py
+./cmsCondorData.py hlt_config_EOR3_v2.py /afs/cern.ch/work/s/ssaumya/private/Egamma/TrackerStudies/CMSSW_14_0_9/src/ /eos/user/s/ssaumya/EGammaHLT/Run3Winter/TrackerStudies/EOR32 -n 15 -q workday -p /afs/cern.ch/user/s/ssaumya/private/x509up_u122184
+./sub_total.jobb
+
+### For the desired path
+cmsRun EfficiencyCalculator
 ```
-cmsRun run_EfficiencyCalculator.py
-```
-The path to the list of input files has to be specified from within that python config.
