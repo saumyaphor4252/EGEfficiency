@@ -1,0 +1,1 @@
+condor_submit /afs/cern.ch/work/s/ssaumya/private/Egamma/Run3Winter24_Efficiency/NEW/GitHub/EGEfficiency/2024_Samples_REDIGI/CMSSW_13_3_3/src/OnTopOfHcalSiPM/HcalPedestals/condor_cluster.sub
