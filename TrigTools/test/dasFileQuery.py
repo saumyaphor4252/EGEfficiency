@@ -33,8 +33,8 @@ def dasFileQuery(dataset):
             files.append(file['name'])
 
     #dir = "/eos/cms/store/relval/CMSSW_14_0_9/RelValZEE_14/GEN-SIM-DIGI-RAW/PU_140X_mcRun3_2024_realistic_v14_RV245_2024-v1"
-    dir = "/eos/cms/store/relval/CMSSW_14_0_9/RelValZEE_14/GEN-SIM-DIGI-RAW/PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv2_RV245_2024-v4"
-    #dir = "/eos/cms/store/relval/CMSSW_14_0_9/RelValZEE_14/GEN-SIM-DIGI-RAW/PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv6_RV245_2024-v1"
+    #dir = "/eos/cms/store/relval/CMSSW_14_0_9/RelValZEE_14/GEN-SIM-DIGI-RAW/PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv2_RV245_2024-v4"
+    dir = "/eos/cms/store/relval/CMSSW_14_0_9/RelValZEE_14/GEN-SIM-DIGI-RAW/PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv6_RV245_2024-v1"
     li2 = []
     for dirpath, dirnames, filenames in os.walk(os.path.abspath(dir)):
         for x in filenames:
@@ -50,5 +50,5 @@ def dasFileQuery(dataset):
     return accessible
 
 #dasFileQuery("/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_v14_RV245_2024-v1/GEN-SIM-DIGI-RAW")
-dasFileQuery("/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv2_RV245_2024-v4/GEN-SIM-DIGI-RAW")
-#dasFileQuery("/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv6_RV245_2024-v1/GEN-SIM-DIGI-RAW")
+#dasFileQuery("/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv2_RV245_2024-v4/GEN-SIM-DIGI-RAW")
+dasFileQuery("/RelValZEE_14/CMSSW_14_0_9-PU_140X_mcRun3_2024_realistic_EOR3_TkDPGv6_RV245_2024-v1/GEN-SIM-DIGI-RAW")
