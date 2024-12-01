@@ -24,7 +24,8 @@ process.source = cms.Source("PoolSource",
                                 fileNames = cms.untracked.vstring(#fList
 #                                    '/store/data/Run2024G/EGamma0/MINIAOD/PromptReco-v1/000/383/811/00000/67aaee8b-778c-457f-b844-f59f268c99af.root'
 #                                    'file:output.root'
-                                     'file:/eos/cms/store/group/phys_egamma/ssaumya/DeepDive/HLTstep_RECO_RootFiles_Reference/stepHLT_RECO_155.root'
+#                                     'file:/eos/cms/store/group/phys_egamma/ssaumya/DeepDive/HLTstep_RECO_RootFiles_Reference/stepHLT_RECO_155.root'
+                                     'file:/eos/cms/store/group/phys_egamma/ssaumya/DeepDive/PATstep_MINIAOD_RootFiles/stepPAT_MINIAOD_0.root'
                 )
                             )
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
