@@ -177,7 +177,7 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   for(auto& trigObj : *triggerObjects){
     unpackedTriggerObjects.push_back(trigObj);
     unpackedTriggerObjects.back().unpackFilterLabels(iEvent,*hlt);
-    //if(unpackedTriggerObjects.back().hasFilterLabel("hltEle32WPTightGsfTrackIsoFilter")){
+    //if(unpackedTriggerObjects.back().hasFilterLabel("hltEle30WPTightGsfTrackIsoFilter")){
     // std::cout << "THE FILTER EXISTS" << std::endl;
     //}
   }
@@ -192,7 +192,7 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
 
   std::vector<pat::Electron> listOfGoodElectrons;
   for(auto& el : *electrons){
-    if(el.pt() < 32. || !(el.electronID("cutBasedElectronID_RunIIIWinter22_V1_tight"))) continue;
+    if(el.pt() < 30. || !(el.electronID("cutBasedElectronID_RunIIIWinter22_V1_tight"))) continue;
     listOfGoodElectrons.push_back(el);
   }  
 
@@ -214,7 +214,7 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
 
     if ( (fabs(goodEl.eta()) < 1.44) || (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.5)) den_ele_pt->Fill(goodEl.pt());
 
-    if (goodEl.pt() > 32.) {
+    if (goodEl.pt() > 30.) {
       den_ele_eta->Fill(goodEl.eta());
       den_ele_phi->Fill(goodEl.phi());
     }
@@ -226,7 +226,7 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
     // Fill numerators based on the passing of a certain trigger filter
 	if(nmatch_filter>0){
       for(auto trigObj : matchedTrigObjsProbes){
-        if(trigObj.hasFilterLabel("hltEle32WPTightGsfTrackIsoFilter")){
+        if(trigObj.hasFilterLabel("hltEle30WPTightGsfTrackIsoFilter")){
 	      // Barrel
           if (fabs(goodEl.eta()) < 1.0 ) num_ele_pt_EB1->Fill(goodEl.pt());
           if (fabs(goodEl.eta()) > 1.0 && fabs(goodEl.eta()) < 1.44) num_ele_pt_EB2->Fill(goodEl.pt());
@@ -240,7 +240,7 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
           // Full
           if ( (fabs(goodEl.eta()) < 1.44) || (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.5)) num_ele_pt->Fill(goodEl.pt());
 
-          if (goodEl.pt() > 32.) {
+          if (goodEl.pt() > 30.) {
             num_ele_eta->Fill(goodEl.eta());
             num_ele_phi->Fill(goodEl.phi());
             occupancy_phi_eta_all->Fill(goodEl.eta(),goodEl.phi());
