@@ -184,17 +184,14 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
 
   auto electrons = ele.product();
   //auto mets = met.product();
-  //
-  //std::cout<<"I am in the loop"<<std::endl;
 
   //std::cout<<"Electrons size"<<electrons->size()<<std::endl; 
   // Only retain events with at least two offline electrons
   //if(electrons->size()>1) return;
-
   //std::cout<<"I passed 1 electron condition"<<std::endl;
 
-  //const pat::MET& MET = met->front();  // Assuming a single MET object
-  //if (MET.pt() < 20) return; // Skip the event by returning early
+  const pat::MET& MET = met->front();  // Assuming a single MET object
+  if (MET.pt() < 20) return; // Skip the event by returning early
 
   for(auto& el : *electrons){
 
@@ -216,7 +213,6 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
         den_ele_eta->Fill(el.eta());
         den_ele_phi->Fill(el.phi());
       }
-	  std::cout<<"I reached denominator"<<std::endl;
 
       // Create a list of probes matched to trigger objects based on DeltaR < 0.1
 	  auto matchedTrigObjsProbes = matchTrigObjs(el.eta(),el.phi(),unpackedTriggerObjects);
