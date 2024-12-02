@@ -177,7 +177,7 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   for(auto& trigObj : *triggerObjects){
     unpackedTriggerObjects.push_back(trigObj);
     unpackedTriggerObjects.back().unpackFilterLabels(iEvent,*hlt);
-    //if(unpackedTriggerObjects.back().hasFilterLabel("hltEle30WPTightGsfTrackIsoFilter")){
+    //if(unpackedTriggerObjects.back().hasFilterLabel("hltEle32WPTightGsfTrackIsoFilter")){
     // std::cout << "THE FILTER EXISTS" << std::endl;
     //}
   }
@@ -190,62 +190,65 @@ void EfficiencyCalculator::analyze(const edm::Event& iEvent, const edm::EventSet
   //if(electrons->size()>1) return;
   //std::cout<<"I passed 1 electron condition"<<std::endl;
 
+  std::vector<pat::Electron> listOfGoodElectrons;
+  for(auto& el : *electrons){
+    if(el.pt() < 32. || !(el.electronID("cutBasedElectronID_RunIIIWinter22_V1_tight"))) continue;
+    listOfGoodElectrons.push_back(el);
+  }  
+
   const pat::MET& MET = met->front();  // Assuming a single MET object
   if (MET.pt() < 20) return; // Skip the event by returning early
 
-  for(auto& el : *electrons){
+  if(listOfGoodElectrons.size()>1) return;
 
-    if(fabs(el.eta()) > endcap_end_) continue;
+  for(auto goodEl : listOfGoodElectrons){
+    if(fabs(goodEl.eta()) > endcap_end_) continue;
 
-	// Only continue if a good probe is found
-    if(el.electronID("cutBasedElectronID_RunIIIWinter22_V1_tight")){	
-      // Fill denominators and occupancy histograms based on the probe passing the above ID
-      if (fabs(el.eta()) < 1.0 ) den_ele_pt_EB1->Fill(el.pt());
-      if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44 ) den_ele_pt_EB2->Fill(el.pt());
-      if (fabs(el.eta()) < 1.44) den_ele_pt_EB->Fill(el.pt());
-	  if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) den_ele_pt_EE1->Fill(el.pt());
-      if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) den_ele_pt_EE2->Fill(el.pt());
-      if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5) den_ele_pt_EE->Fill(el.pt());
+    // Fill denominators and occupancy histograms based on the probe passing the above ID
+    if (fabs(goodEl.eta()) < 1.0 ) den_ele_pt_EB1->Fill(goodEl.pt());
+    if (fabs(goodEl.eta()) > 1.0 && fabs(goodEl.eta()) < 1.44 ) den_ele_pt_EB2->Fill(goodEl.pt());
+    if (fabs(goodEl.eta()) < 1.44) den_ele_pt_EB->Fill(goodEl.pt());
+	if (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.0) den_ele_pt_EE1->Fill(goodEl.pt());
+    if (fabs(goodEl.eta()) > 2.00 && fabs(goodEl.eta()) < 2.5) den_ele_pt_EE2->Fill(goodEl.pt());
+    if (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.5) den_ele_pt_EE->Fill(goodEl.pt());
 
-      if ( (fabs(el.eta()) < 1.44) || (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5)) den_ele_pt->Fill(el.pt());
+    if ( (fabs(goodEl.eta()) < 1.44) || (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.5)) den_ele_pt->Fill(goodEl.pt());
 
-      if (el.pt() > 30.) {
-        den_ele_eta->Fill(el.eta());
-        den_ele_phi->Fill(el.phi());
-      }
-
-      // Create a list of probes matched to trigger objects based on DeltaR < 0.1
-	  auto matchedTrigObjsProbes = matchTrigObjs(el.eta(),el.phi(),unpackedTriggerObjects);
-      auto nmatch_filter = matchedTrigObjsProbes.size();
-
-      // Fill numerators based on the passing of a certain trigger filter
-	  if(nmatch_filter>0){
-        for(auto trigObj : matchedTrigObjsProbes){
-          if(trigObj.hasFilterLabel("hltEle30WPTightGsfTrackIsoFilter")){
-	        // Barrel
-            if (fabs(el.eta()) < 1.0 ) num_ele_pt_EB1->Fill(el.pt());
-            if (fabs(el.eta()) > 1.0 && fabs(el.eta()) < 1.44) num_ele_pt_EB2->Fill(el.pt());
-            if (fabs(el.eta()) < 1.44 ) num_ele_pt_EB->Fill(el.pt());
-
-            // Endcap
-            if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.0) num_ele_pt_EE1->Fill(el.pt());
-            if (fabs(el.eta()) > 2.00 && fabs(el.eta()) < 2.5) num_ele_pt_EE2->Fill(el.pt());
-            if (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5) num_ele_pt_EE->Fill(el.pt());
-
-            // Full
-            if ( (fabs(el.eta()) < 1.44) || (fabs(el.eta()) > 1.56 && fabs(el.eta()) < 2.5)) num_ele_pt->Fill(el.pt());
-
-            if (el.pt() > 30.) {
-              num_ele_eta->Fill(el.eta());
-              num_ele_phi->Fill(el.phi());
-	          occupancy_phi_eta_all->Fill(el.eta(),el.phi());
-            }
-	        break; // Avoid to fill the numerator more than once with the same object if more than one offline-online matching is found
-          }
-		}  
-	  }	  
+    if (goodEl.pt() > 32.) {
+      den_ele_eta->Fill(goodEl.eta());
+      den_ele_phi->Fill(goodEl.phi());
     }
-	break;
+
+    // Create a list of probes matched to trigger objects based on DeltaR < 0.1
+	auto matchedTrigObjsProbes = matchTrigObjs(goodEl.eta(),goodEl.phi(),unpackedTriggerObjects);
+    auto nmatch_filter = matchedTrigObjsProbes.size();
+
+    // Fill numerators based on the passing of a certain trigger filter
+	if(nmatch_filter>0){
+      for(auto trigObj : matchedTrigObjsProbes){
+        if(trigObj.hasFilterLabel("hltEle32WPTightGsfTrackIsoFilter")){
+	      // Barrel
+          if (fabs(goodEl.eta()) < 1.0 ) num_ele_pt_EB1->Fill(goodEl.pt());
+          if (fabs(goodEl.eta()) > 1.0 && fabs(goodEl.eta()) < 1.44) num_ele_pt_EB2->Fill(goodEl.pt());
+          if (fabs(goodEl.eta()) < 1.44 ) num_ele_pt_EB->Fill(goodEl.pt());
+
+          // Endcap
+          if (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.0) num_ele_pt_EE1->Fill(goodEl.pt());
+          if (fabs(goodEl.eta()) > 2.00 && fabs(goodEl.eta()) < 2.5) num_ele_pt_EE2->Fill(goodEl.pt());
+          if (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.5) num_ele_pt_EE->Fill(goodEl.pt());
+
+          // Full
+          if ( (fabs(goodEl.eta()) < 1.44) || (fabs(goodEl.eta()) > 1.56 && fabs(goodEl.eta()) < 2.5)) num_ele_pt->Fill(goodEl.pt());
+
+          if (goodEl.pt() > 32.) {
+            num_ele_eta->Fill(goodEl.eta());
+            num_ele_phi->Fill(goodEl.phi());
+            occupancy_phi_eta_all->Fill(goodEl.eta(),goodEl.phi());
+          }
+          break; // Avoid to fill the numerator more than once with the same object if more than one offline-online matching is found
+        }
+      }  
+    }
   }
 }
 
