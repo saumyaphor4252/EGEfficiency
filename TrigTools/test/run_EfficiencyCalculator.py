@@ -6,19 +6,27 @@ process = cms.Process("USER")
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
+#process.MessageLogger.cout = cms.untracked.PSet(
+#    threshold = cms.untracked.string('INFO'),
+#    default = cms.untracked.PSet(limit = cms.untracked.int32(-1)),  # No limit
+#    reportEvery = cms.untracked.int32(1)  # Report every 100 events
+#)
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+#process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True))
+
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v3') 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(200) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # Input file source
-# dir1Name = "/afs/cern.ch/user/r/rselvati/work/private/testBPIX/CMSSW_13_0_10/src/SteamRatesEdmWorkflow/Prod/hltModified/"
-# fileList1 = filter(os.path.isfile, glob.glob(dir1Name + "*.root"))
-# fList = []
-# for f in fileList1:
-#      fs = str(f).replace("/afs/","file:/afs/")
-#      fList.append(fs)
-# print(fList)
+#dir1Name = "/eos/cms/store/group/phys_egamma/ssaumya/DeepDive/PATstep_MINIAOD_RootFiles_Reference/"
+#fileList1 = filter(os.path.isfile, glob.glob(dir1Name + "*.root"))
+#fList = []
+#for f in fileList1:
+#     fs = str(f).replace("/eos/","file:/eos/")
+#     fList.append(fs)
+#print(fList)
 #from list_relval import fileList
 process.source = cms.Source("PoolSource",
                                 fileNames = cms.untracked.vstring(#fList
@@ -32,7 +40,7 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #Output file
 process.TFileService = cms.Service("TFileService",
-   fileName = cms.string("Efficiency_Modified.root")
+   fileName = cms.string("Efficiency_Reference_30WP_Wlnu_Test.root")
 )
 
 process.EfficiencyCalculator = cms.EDAnalyzer('EfficiencyCalculator',
